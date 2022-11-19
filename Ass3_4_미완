@@ -1,0 +1,135 @@
+#include <iostream>
+using namespace std;
+
+#define queueMAXSIZE 100
+
+template <typename E>
+class arrayQueue {
+	E queue[queueMAXSIZE];
+	int front, rear, count;
+public:
+	arrayQueue();							// 생성자
+	~arrayQueue();							// 소멸자
+	void enQueue(const E& e);				// 삽입
+	void deQueue(void);						// 삭제
+	E peek(void) const;						// 값 확인
+	bool isEmpty(void) const;				// 빈 큐인지 확인
+	bool isFull(void) const;				// 배열 풀인지 확인
+	void printQueue(void) const;			// 전체출력
+};
+
+// 생성자
+template <typename E>
+arrayQueue<E>::arrayQueue() {
+	front = 0;
+	rear = 0;
+}
+
+// 소멸자
+template <typename E>
+arrayQueue<E>::~arrayQueue() {
+	
+}
+
+// 삽입
+template <typename E>
+void arrayQueue<E>::enQueue(const E& e) {
+	if (front == (rear + 1) % count)
+		isFull();
+	else {
+		rear = ++rear % count;
+		queue[rear] = e;
+		cout << rear << "번째에 " << e << "가 enQueue 되었습니다." << endl;
+	}
+}
+
+// 삭제
+template <typename E>
+void arrayQueue<E>::deQueue() {
+	if (front == (rear + 1) % count)
+		isFull();
+	else {
+		cout << ++front % count << "번째에 " << queue[front % count] << "가 deQueue 되었습니다." << endl;
+	}
+}
+
+// 값 확인
+template <typename E>
+E arrayQueue<E>::peek() const {
+
+}
+
+// 빈 큐인지 확인
+template <typename E>
+bool arrayQueue<E>::isEmpty() const {
+	return front == rear;
+}
+
+// 배열 풀인지 확인
+template <typename E>
+bool arrayQueue<E>::isFull() const {
+	return ((rear + 1) % count) == front;
+}
+
+// 전체출력
+template <typename E>
+void arrayQueue<E>::printQueue() const {
+	if (front == rear)
+		isEmpty();
+	else {
+		cout << "원형 큐 : ";
+		for (int i = 0; i < count; i++) {
+			cout << queue[i] << " ";
+		}
+		cout << endl;
+	}
+}
+
+int main(void) {
+	int count = 0;
+	cout << "원형 큐의 크기 : ";
+	cin >> count;
+
+	arrayQueue<int> aq;
+
+	int choice = 0, num = 0;
+	
+	while (true) {
+
+		system("cls");
+
+		cout << "\n ### 큐 구현: 단순 연결 리스트 ### \n" << endl;
+		cout << "1) 데이터 삽입: PUSH" << endl;
+		cout << "2) 데이터 삭제: POP" << endl;
+		cout << "3) 전체 출력" << endl;
+		cout << "4) 프로그램 종료 \n" << endl;
+		cout << "메뉴 선택 : ";
+		cin >> choice;
+
+		switch (choice) {
+		case 1: cout << "\n삽입 할 데이터 입력: ";
+			cin >> num;
+			aq.enQueue(num);
+			break;
+
+		case 2: cout << "삭제 된 데이터: " << aq.deQueue() << endl;
+			break;
+
+		case 3: aq.printQueue();
+			break;
+
+		case 4: cout << "프로그램 종료..." << endl;
+			return 0;
+
+		default: cout << "잘못 선택 하셨습니다." << endl;
+		}
+
+		system("pause");
+	}
+
+	// s.~ListStack();
+
+
+	return 0;
+
+}
