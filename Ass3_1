@@ -1,0 +1,129 @@
+#include <iostream>
+using namespace std;
+
+class SNode {
+	int data;
+	SNode* link;
+	friend class SLinkedList;
+};
+
+class SLinkedList {
+	SNode* head;
+public:
+	SLinkedList();
+	~SLinkedList();
+	bool isEmpty() const;
+	int countSNode() const;
+	SNode* frontSNode() const;
+	SNode* rearSNode() const;
+	SNode* makeSNode(const int& e) const;		// 새로운 노드 생성
+	void addRear(const int& e);					// 삽입 : 맨 뒤에 노드 추가
+	void removeFront();							// 삭제 : 첫 번째 노드
+	void printSLinkedList();					// 리스트 전체 출력
+
+};
+
+
+// 생성자
+SLinkedList::SLinkedList() {
+	head = NULL;
+}
+
+// 빈 리스트 판단 여부
+bool SLinkedList::isEmpty() const {
+	return head == NULL;
+}
+
+// 리스트의 총 개수
+int SLinkedList::countSNode() const {
+	if (isEmpty()) return 0;
+	int count = 0;
+	SNode* nNode = head;
+	while (nNode->link) {
+		count++;
+		nNode = nNode->link;
+	}
+	return count;
+}
+
+// 탐색 : 첫 번째 노드
+SNode* SLinkedList::frontSNode() const {
+	return head;
+}
+
+// 탐색 : 마지막 노드
+SNode* SLinkedList::rearSNode() const {
+	if (isEmpty()) return NULL;
+	SNode* nNode = head;
+	while (nNode->link) {
+		nNode = nNode->link;
+	}
+	return nNode;
+}
+
+// 새로운 노드 생성
+SNode* SLinkedList::makeSNode(const int& e) const {
+	SNode* nNode = new SNode;
+	nNode->data = e;
+	nNode->link = NULL;
+	return nNode;
+}
+
+// 삽입 : 맨 뒤에 추가
+void SLinkedList::addRear(const int& e) {
+	SNode* nNode = makeSNode(e);
+	if (isEmpty()) head = nNode;
+	else {
+		SNode* rNode = rearSNode();
+		rNode->link = nNode;
+	}
+}
+
+// 삭제 : 첫 번째 노드
+void SLinkedList::removeFront() {
+	if (isEmpty()) return;
+	SNode* nNode = head;
+	head = nNode->link;
+	delete nNode;
+}
+
+// 전체 삭제
+SLinkedList::~SLinkedList() {
+	while (!isEmpty()) removeFront();
+}
+
+// 리스트 전체 출력
+void SLinkedList::printSLinkedList() {
+	if (isEmpty()) return;
+	SNode* nNode = head;
+	while (nNode) {
+		cout.width(3);
+		cout << nNode->data << "->>";
+		nNode = nNode->link;
+	}
+	cout << "NULL" << endl;
+}
+
+int main(void) {
+
+	int num;
+	SLinkedList sList = SLinkedList();
+	while (true) {
+		cout << "임의의 정수 입력(종료: 0): ";
+		cin >> num;
+		if (num == 0) break;
+		sList.addRear(num);
+	}
+
+	// 전체 출력
+	if (sList.isEmpty()) {
+		cout << "입력된 데이터가 없습니다..." << endl;
+		sList.~SLinkedList();
+		return 0;
+	}
+	cout << endl << "### 입력된 데이터 ###" << endl;
+	sList.printSLinkedList();
+
+	sList.~SLinkedList();
+	return 0;
+}
