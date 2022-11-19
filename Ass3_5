@@ -1,0 +1,142 @@
+#include <iostream>
+using namespace std;
+
+inline void error(const char* message) {
+    cout << message;
+    exit(100);
+}
+
+template <typename E>
+class queueNode {
+    E data;
+    queueNode<E>* link;
+    template <typename E> friend class LinkedQueue;
+public:
+    queueNode();
+};
+
+template <typename E>
+queueNode<E>::queueNode() {
+    data = data;
+    link = NULL;
+}
+
+template <typename E>
+class LinkedQueue {
+    queueNode<E>* front, * rear;
+    int count;
+public:
+    LinkedQueue();                                              // 생성자
+    ~LinkedQueue();                                             // 소멸자
+    queueNode<E>* makeQueueNode(const int& num) const;          // 큐 생성
+    void enQueue(const E& e);                                   // 큐 삽입
+    void deQueue(void);                                         // 마지막 큐 삭제 
+    E peek(void) const;                                         // 큐 값 확인
+    bool isEmpty(void) const;                                   // 빈 큐 여부 판단
+    void printQueue(void) const;                                // 큐의 전체 원소 출력
+}; 
+
+// 생성자
+template <typename E>
+LinkedQueue<E>::LinkedQueue() {
+    front = NULL;
+    rear = NULL;
+}
+
+// 소멸자
+template <typename E>
+LinkedQueue<E>:: ~LinkedQueue() {
+    while (!isEmpty()) deQueue();
+}
+
+// 생성 : 빈 큐 생성
+template <typename E>
+queueNode<E>* LinkedQueue<E>::makeQueueNode(const int& num) const {
+    queueNode<E>* nQNode = new queueNode<E>;
+    nQNode->data = num; 
+    nQNode->link = NULL;
+    return nQNode;
+}
+
+// 삽입 : 맨 뒤에 추가
+template <typename E>
+void LinkedQueue<E>::enQueue(const E& e) {
+    queueNode<E>* nQNode = makeQueueNode(e);
+    if (isEmpty()) { 
+        front = nQNode;
+        rear = nQNode;
+    }
+    else {
+        queueNode<E>* rQNode = rear;
+        rQNode->link = nQNode;
+        rear = nQNode;
+    }
+}
+
+// 삭제 : 맨 앞에 삭제
+template <typename E>
+void LinkedQueue<E>::deQueue() {
+    if (isEmpty()) error("Already Empty");
+    queueNode<E>* nQNode = front, * rQNode = rear;
+    E _data = nQNode->data;
+    front = nQNode->link;
+    if (!front) rear = NULL;
+    delete nQNode;
+}
+
+// 맨 뒤 출력
+template <typename E>
+E LinkedQueue<E>::peek() const {
+    return front->data;
+}
+
+// 빈 큐 여부 판단
+template <typename E>
+bool LinkedQueue<E>::isEmpty() const {
+    return front == NULL;
+}
+
+// 전체 출력
+template <typename E>
+void LinkedQueue<E>::printQueue() const {
+    queueNode<E>* nQNode = front;
+    cout << "\n QUEUE [";
+    while (nQNode) {
+        cout.width(3);
+        cout << nQNode->data;
+        nQNode = nQNode->link;
+    }
+    cout << " ]" << endl;
+}
+
+
+int main(void)
+{
+    int			num, choice;
+    LinkedQueue<int>	LQ;
+
+    while (true) {
+        system("cls");
+        cout << "\n ### 큐 구현: 단순 연결 리스트 ### \n" << endl;
+        cout << "1) 데이터 삽입(push, enQueue)" << endl;
+        cout << "2) 데이터 삭제(pop, deQueue)" << endl;
+        cout << "3) 전체 출력" << endl;
+        cout << "4) 프로그램 종료 \n" << endl;
+        cout << "메뉴 선택: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1: cout << "\n삽입 할 데이터 입력: ";
+            cin >> num;		LQ.enQueue(num);	break;
+        case 2: cout << "삭제 된 데이터: " << LQ.peek() << endl;
+            LQ.deQueue();		break;
+        case 3: LQ.printQueue();
+            break;
+        case 4: cout << "프로그램 종료..." << endl;
+            return 0;
+        default: cout << "잘못 선택 하셨습니다." << endl;
+        }
+        system("pause");
+    }
+    return 0;	// s.~LinkedQueue();
+}
