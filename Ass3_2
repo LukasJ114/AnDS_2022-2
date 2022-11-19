@@ -1,0 +1,140 @@
+#include <iostream>
+using namespace std;
+
+class DNode {
+	int data;
+	DNode* Llink;
+	DNode* Rlink;
+	friend class DLinkedList;
+};
+
+class DLinkedList {
+	DNode* head;
+	DNode* tail;
+	int count;
+public:
+	DLinkedList();								// 생성자
+	~DLinkedList();								// 소멸자 : 전체 삭제
+	bool isEmpty() const;						// 빈 리스트 여부 확인
+	int countDNode() const;						// 리스트 노드의 총 개수 확인
+	DNode* frontDNode() const;					// 탐색 : 맨 처음 노드
+	DNode* rearDNode() const;					// 탐색 : 맨 마지막 노드
+	DNode* makeDNode(const int& e) const;		// 새로운 노드 생성
+	void addRear(const int& e);					// 삽입 : 맨 뒤 삽입
+	void removeFront();							// 삭제 : 맨 앞 노드 삭제
+	void printDLinkedList();					// 리스트 전체 순방향 출력
+	void reversePrintDLinkedList();				// 리스트 전체 역방향 출력
+};
+
+// 생성자
+DLinkedList::DLinkedList() {
+	head = NULL;
+	tail = NULL;
+}
+
+// 빈 리스트 여부 확인
+bool DLinkedList::isEmpty() const {
+	return head == NULL;
+}
+
+// 리스트의 총 개수 확인
+int DLinkedList::countDNode() const {
+	return count;
+}
+
+// 탐색 : 맨 처음 노드
+DNode* DLinkedList::frontDNode() const {
+	return head;
+}
+
+// 탐색 : 맨 마지막 노드
+DNode* DLinkedList::rearDNode() const {
+	return tail;
+}
+
+// 새로운 노드 생성
+DNode* DLinkedList:: makeDNode(const int& e) const {
+	DNode* nNode = new DNode;
+	nNode->data = e;
+	nNode->Llink = NULL;
+	nNode->Rlink = NULL;
+	return nNode;
+}
+
+// 삽입 : 맨 마지막 삽입
+void DLinkedList::addRear(const int& e) {
+	DNode* nNode = makeDNode(e);
+	if (isEmpty()) {
+		head = nNode;
+		tail = nNode;
+	}
+	else {
+		DNode* rNode = tail;
+		rNode->Rlink = nNode;
+		nNode->Llink = rNode;
+		tail = nNode;	
+	}
+}
+
+// 삭제 : 맨 처음 삭제
+void DLinkedList::removeFront() {
+	if (isEmpty()) return;
+	DNode* nNode = head;
+	head = nNode->Rlink;
+	if (nNode->Rlink != NULL) {
+		DNode* sNode = nNode->Rlink;
+		sNode->Llink = NULL;
+	}
+	delete nNode;
+}
+
+// 소멸자 : 전체 삭제
+DLinkedList::~DLinkedList() {
+	while (!isEmpty()) removeFront();
+}
+
+// 리스트 전체 순방향 출력
+void DLinkedList::printDLinkedList() {
+	DNode* nNode = head;
+	while (nNode) {
+		cout.width(3);
+		cout << nNode->data << " ->>";
+		nNode = nNode->Rlink;
+	}
+	cout << " NULL" << endl;
+}
+
+// 리스트 전체 역방향 출력
+void DLinkedList::reversePrintDLinkedList() {
+	DNode* nNode = tail;
+	while (nNode) {
+		cout.width(3);
+		cout << nNode->data << " ->>";
+		nNode = nNode->Llink;
+	}
+	cout << " NULL" << endl;
+}
+
+int main(void) {
+
+	int num;
+	DLinkedList dList = DLinkedList();
+	while (true) {
+		cout << "임의의 정수 입력(종료: 0): ";
+		cin >> num;
+		if (num == 0) break;
+		dList.addRear(num);
+	}
+
+	if (dList.isEmpty()) {
+		cout << "입력된 데이터가 없습니다." << endl;
+		return 0;
+	}
+
+	cout << endl << " ### 입력된 데이터 ###" << endl;
+	dList.printDLinkedList();
+	dList.reversePrintDLinkedList();
+	
+	dList.~DLinkedList();
+	return 0;
+}
